@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const authRoute = require("./routes/auth");
+const userRoute = require("./routes/user");  
 
 dotenv.config();
 
@@ -15,8 +16,11 @@ mongoose
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err);
   });
+
+
 app.use(express.json())
 app.use("/api/", authRoute);
+app.use("/api/users", userRoute);
 
 
 
@@ -24,6 +28,6 @@ app.use("/api/", authRoute);
 
 app.get("/", (req, res) => res.send("Hello"));
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5002;
 
 app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));
