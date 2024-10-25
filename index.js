@@ -3,7 +3,8 @@ const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const authRoute = require("./routes/auth");
-const userRoute = require("./routes/user");  
+const userRoute = require("./routes/user");
+const jobRoute = require("./routes/job");
 
 dotenv.config();
 
@@ -17,14 +18,10 @@ mongoose
     console.error("Error connecting to MongoDB:", err);
   });
 
-
-app.use(express.json())
+app.use(express.json());
 app.use("/api/", authRoute);
 app.use("/api/users", userRoute);
-
-
-
-
+app.use("api/jobs", jobRoute);
 
 app.get("/", (req, res) => res.send("Hello"));
 
