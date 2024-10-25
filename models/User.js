@@ -35,7 +35,7 @@ const UserSchema = new mongoose.Schema(
     profilePic: {
       type: String,
       required: true,
-      default: "",
+      default: "https://wallpapers-clan.com/pfp/default/",
     },
     disability: {
       type: String,
