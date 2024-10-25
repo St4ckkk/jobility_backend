@@ -11,14 +11,14 @@ module.exports = {
     }
 
     try {
-      const updatedUser = await User.findByIdAndUpdate(
+      const UpdateUser = await User.findByIdAndUpdate(
         req.params.id,
         {
           $set: req.body,
         },
         { new: true }
       );
-      const { password, __v, createdAt, ...others } = updatedUser._doc;
+      const { password, __v, createdAt, ...others } = UpdateUser._doc; // Fix this line
       res.status(200).json({ ...others });
     } catch (err) {
       res.status(500).json(err);

@@ -2,35 +2,32 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-    const authHeader = req.headers.token;
+  if (!authHeader) {
+    return res.status(401).json({ message: "You are not authenticated" });
+  }
 
-    if(authHeader) {
-        const token = authHeader.split(" ")[1];
+  const token = authHeader.split(" ")[1];
 
-        jwt.verify(token, process.env.JWT_SEC, async (err, user) => {
-            if(err) res.status(403).json('Invalid Token');
-
-            req.user = user;
-
-            next();
-        })
-    }else {
-        return res.status(401).json("You are not authenticated");
+  jwt.verify(token, process.env.JWT_SEC, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "Invalid Token" });
     }
 
+    req.user = user;
+    next();
+  });
 };
 
-
 const verifyAndAuthorization = (req, res, next) => {
-    
-    verifyToken(req, res, () => {
-        if(req.user.id === req.params.id) {
-            next();
-        } else {
-            res.status(403).json("You are not allowed to do that!");
-        }
-    })
-}
+  verifyToken(req, res, () => {
+    if (req.user.id === req.params.id) {
+      next();
+    } else {
+      res.status(403).json({ message: "You are not allowed to do that!" });
+    }
+  });
+};
 
-module.exports = {verifyToken, verifyAndAuthorization};
+module.exports = { verifyToken, verifyAndAuthorization };
