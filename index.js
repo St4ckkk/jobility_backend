@@ -23,6 +23,8 @@ app.use("/api/", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/jobs", jobRoute);
 
+
+
 app.get("/", (req, res) => res.send("Hello"));
 
 const PORT = process.env.PORT || 5002;

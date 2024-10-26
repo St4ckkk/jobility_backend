@@ -23,7 +23,7 @@ router.get("/:id", jobController.getJob);
 // Route to get all jobs
 router.get("/", jobController.getAllJobs);
 
-// // Route to search jobs by key
-// router.get("/search/key:", jobController.searchJobs);
+// Route to search jobs by key
+router.get("/search/:key", jobController.searchJobs);
 
 module.exports = router;

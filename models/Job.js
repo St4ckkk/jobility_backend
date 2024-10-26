@@ -43,6 +43,16 @@ const JobSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    acceptedDisabilities: {
+      type: [
+        {
+          type: { type: String, required: true },
+          description: { type: String, required: true },
+          specificNames: { type: [String], required: true }
+        }
+      ],
+      required: true,
+    },
   },
   { timestamps: true }
 );
