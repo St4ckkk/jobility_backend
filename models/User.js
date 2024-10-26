@@ -39,7 +39,7 @@ const UserSchema = new mongoose.Schema(
     },
     disability: {
       type: String,
-      required: false,
+      required: true,
     },
   },
   { timestamps: true }

@@ -6,6 +6,8 @@ const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const jobRoute = require("./routes/job");
 const bookmarkRoute = require('./routes/bookmark');
+// const chatRoute = require('./routes/cha')
+const bodyParser = require('body-parser')
 
 dotenv.config();
 
@@ -19,7 +21,8 @@ mongoose
     console.error("Error connecting to MongoDB:", err);
   });
 
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/jobs", jobRoute);
