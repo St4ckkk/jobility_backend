@@ -11,14 +11,14 @@ const {
 // Route to post a new job, accessible only by admin
 router.post("/", verifyAndAdmin, jobController.postJob);
 
-// // Route to update a job by ID, accessible only by admin
-// router.put("/:id", verifyAndAdmin, jobController.updateJob);
+// Route to update a job by ID, accessible only by admin
+router.put("/:id", verifyAndAdmin, jobController.updateJob);
 
-// // Route to delete a job by ID, accessible only by admin
-// router.delete("/:id", verifyAndAdmin, jobController.deleteJob);
+// Route to delete a job by ID, accessible only by admin
+router.delete("/:id", verifyAndAdmin, jobController.deleteJob);
 
-// // Route to get a job by ID
-// router.get("/:id", jobController.getJob);
+// Route to get a job by ID
+router.get("/:id", jobController.getJob);
 
 // // Route to get all jobs
 // router.get("/", jobController.getAllJobs);

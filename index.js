@@ -21,7 +21,7 @@ mongoose
 app.use(express.json());
 app.use("/api/", authRoute);
 app.use("/api/users", userRoute);
-app.use("api/jobs", jobRoute);
+app.use("/api/jobs", jobRoute);
 
 app.get("/", (req, res) => res.send("Hello"));
 
