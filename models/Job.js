@@ -53,10 +53,7 @@ const JobSchema = new mongoose.Schema(
       ],
       required: true,
     },
-    position: {
-      type: String,
-      required: true
-    }
+
   },
   { timestamps: true }
 );
