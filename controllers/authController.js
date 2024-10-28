@@ -3,7 +3,7 @@ const CryptoJs = require("crypto-js");
 const jwt = require("jsonwebtoken");
 
 const createUser = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, fullname, email, password } = req.body;
 
   const newUser = new User({
     username,
