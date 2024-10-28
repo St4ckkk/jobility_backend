@@ -22,7 +22,7 @@ const verifyToken = (req, res, next) => {
 
 const verifyAndAuthorization = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.id === req.params.id) {
+    if (req.user.id) {
       next();
     } else {
       res.status(403).json({ message: "You are not allowed to do that!" });
