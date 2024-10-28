@@ -7,6 +7,7 @@ const createUser = async (req, res) => {
 
   const newUser = new User({
     username,
+    fullname,
     email,
     password: CryptoJs.AES.encrypt(password, process.env.SECRET_KEY).toString(),
   });
