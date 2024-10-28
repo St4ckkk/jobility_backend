@@ -36,10 +36,10 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: false,
     },
-    profilePic: {
+    profile: {
       type: String,
       required: true,
-      default: "https://wallpapers-clan.com/pfp/default/",
+      default: "https://upload.wikimedia.org/wikipedia/en/thumb/8/84/Jollibee_2011_logo.svg/800px-Jollibee_2011_logo.svg.png",
     },
     disability: {
       type: String,
