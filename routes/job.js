@@ -8,10 +8,10 @@ const {
   verifyAndAdmin,
 } = require("../middleware/verifyToken");
 
-// Route to post a new job, accessible only by admin
+// Route to post a new job, accessible only by admin and Agent
 router.post("/", verifyAndAdmin, jobController.postJob);
 
-// Route to update a job by ID, accessible only by admin
+// Route to update a job by ID, accessible only by admin 
 router.put("/:id", verifyAndAdmin, jobController.updateJob);
 
 // Route to delete a job by ID, accessible only by admin

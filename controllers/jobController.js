@@ -4,42 +4,43 @@ module.exports = {
   postJob: async (req, res) => {
     const newJob = new Job(req.body);
     try {
-      const savedJob = await newJob.save();
-      const { __v, createdAt, updatedAt, ...newJobInfo } = savedJob._doc;
-
-      res.status(201).json(newJobInfo);
+      await newJob.save();
+      res.status(201).json({ status: true, message: 'Job created Successfully.' });
     } catch (err) {
       res.status(500).json(err);
     }
   },
 
   updateJob: async (req, res) => {
+
+    const jobId = req.params.id;
+    const updated = req.body;
     try {
-      const updatedJob = await Job.findByIdAndUpdate(
-        req.params.id,
-        { $set: req.body },
-        { new: true });
+      const updatedJob = await Job.findByIdAndUpdate(jobId, updated, { new: true });
 
-      const { __v, createdAt, updatedAt, ...updatedJobInfo } = updatedJob._doc;
-
-      res.status(200).json(updatedJobInfo);
+      if (!updatedJob) {
+        res.status(404).json({ status: false, message: 'Job not found.' });
+      }
+      res.status(200).json({ status: true, message: 'Job updated successfully.' });
     } catch (err) {
       res.status(500).json(err);
     }
   },
 
   deleteJob: async (req, res) => {
+    const jobId = req.params.id;
     try {
-      await Job.findByIdAndDelete(req.params.id);
-      res.status(200).json("Job Successfully Deleted");
+      await Job.findByIdAndDelete(jobId);
+      res.status(200).json({ status: true, message: 'Job deleted successfully.' });
     } catch (err) {
       res.status(500).json(err);
     }
   },
 
   getJob: async (req, res) => {
+    const jobId = req.params.id;
     try {
-      const job = await Job.findById(req.params.id);
+      const job = await Job.findById({ _id: jobId }, { createdAt: 0, updatedAt: 0, __v: 0 });
       res.status(200).json(job);
     } catch (err) {
       res.status(500).json(err);
@@ -47,12 +48,19 @@ module.exports = {
   },
 
   getAllJobs: async (req, res) => {
+    const recent = req.query.new;
     try {
-      const job = await Job.find();
+      let jobs;
+      if (recent) {
+        jobs = await Job.find({}, { createdAt: 0, updatedAt: 0, __v: 0 }).sort({ createdAt: -1 }).limit(2);
+      } else {
+        jobs = await Job.find({}, { createdAt: 0, updatedAt: 0, __v: 0 });
+      }
 
-      res.status(200).json(job);
-    } catch (err) {
-      res.status(500).json(err);
+    
+      res.status(200).json(jobs);
+    } catch (error) {
+
     }
   },
 

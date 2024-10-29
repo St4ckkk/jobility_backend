@@ -32,7 +32,7 @@ const verifyAndAuthorization = (req, res, next) => {
 
 const verifyAndAdmin = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.isAdmin) {
+    if (req.user.isAdmin || req.user.isAgent) {
       next();
     } else {
       res.status(403).json({ message: "You are not allowed to do that!" });
