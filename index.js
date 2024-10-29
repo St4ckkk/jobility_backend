@@ -11,12 +11,14 @@ const bodyParser = require('body-parser')
 
 dotenv.config();
 
-const admin = require('firebase-admin');
-const serviceAccount = require('./jobility-95279-firebase-adminsdk-aua55-c11f300567.json');
+var admin = require("firebase-admin");
+
+var serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(serviceAccount)
 });
+
 
 mongoose
   .connect(process.env.MONGO_URL, {
