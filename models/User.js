@@ -20,6 +20,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    uid: {
+      type: String,
+      required: true
+    },
     location: {
       type: String,
       required: false,
