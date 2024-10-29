@@ -22,6 +22,10 @@ const JobSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    agentName: {
+      type: String,
+      required: true,
+    },
     period: {
       type: String,
       required: true,
@@ -29,6 +33,11 @@ const JobSchema = new mongoose.Schema(
     contract: {
       type: String,
       required: true,
+    },
+    hiring: {
+      type: Boolean,
+      required: true,
+      default: true,
     },
     requirements: {
       type: Array,
@@ -47,13 +56,11 @@ const JobSchema = new mongoose.Schema(
       type: [
         {
           type: { type: String, required: true },
-          description: { type: String, required: true },
-          specificNames: { type: [String], required: true }
-        }
+          specificNames: { type: [String], required: true },
+        },
       ],
       required: true,
     },
-
   },
   { timestamps: true }
 );
