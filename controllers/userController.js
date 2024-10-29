@@ -47,20 +47,46 @@ module.exports = {
     }
   },
 
+  // addSkill: async (req, res) => {
+  //   const newSkill = new Skills({
+  //     userId: req.user.id,
+  //     skill: req.body.skill,
+  //   });
+
+  //   try {
+  //     await newSkill.save();
+  //     await User.findByIdAndUpdate(req.user.id, { $set: { skills: true } })
+  //     res.status(200).json({ status: true });
+  //   } catch (err) {
+  //     res.status(500).json(err);
+  //   }
+  // },
+
   addSkill: async (req, res) => {
-    const newSkill = new Skills({
-      userId: req.user.id,
-      skill: req.body.skill,
+    const newSkill = new Skill({
+        userId: req.user.id,
+        skill: req.body.skill,
     });
 
     try {
-      await newSkill.save();
-      await User.findByIdAndUpdate(req.user.id, { $set: { skills: true } })
-      res.status(200).json({ status: true });
+        await newSkill.save();
+        await User.findByIdAndUpdate(req.user.id, { $set: { skills: true } });
+        res.status(200).json({ status: true });
     } catch (err) {
-      res.status(500).json(err);
+        res.status(500).json(err);
     }
-  },
+},
+
+// Replace Skills with Skill in deleteSkills
+deleteSkills: async (req, res) => {
+    const id = req.params.id;
+    try {
+        await Skill.findByIdAndDelete(id);
+        res.status(200).json({ status: true });
+    } catch (err) {
+        res.status(500).json(err);
+    }
+},
 
 
   getSkills: async (req, res) => {
@@ -78,15 +104,15 @@ module.exports = {
   },
 
 
-  deleteSkills: async (req, res) => {
-    const id = req.params.id;
-    try {
-      await Skills.findByIdAndDelete(id)
-      res.status(200).json({ status: true });
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  },
+  // deleteSkills: async (req, res) => {
+  //   const id = req.params.id;
+  //   try {
+  //     await Skills.findByIdAndDelete(id)
+  //     res.status(200).json({ status: true });
+  //   } catch (err) {
+  //     res.status(500).json(err);
+  //   }
+  // },
 
 
   addAgent: async (req, res) => {
