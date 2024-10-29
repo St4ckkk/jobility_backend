@@ -6,20 +6,19 @@ const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const jobRoute = require("./routes/job");
 const bookmarkRoute = require('./routes/bookmark');
-// const chatRoute = require('./routes/cha')
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 dotenv.config();
 
-var admin = require("firebase-admin");
+const admin = require('firebase-admin');
+const serviceAccount = require('./serviceAccountKey.json');
 
-var serviceAccount = require("./serviceAccountKey.json");
-
+// Initialize Firebase Admin SDK
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
 });
 
-
+// Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -37,8 +36,13 @@ app.use("/api/users", userRoute);
 app.use("/api/jobs", jobRoute);
 app.use("/api/bookmarks", bookmarkRoute);
 
+// Endpoint to check server time
+app.get("/time", (req, res) => {
+  const currentTime = new Date();
+  res.json({ currentTime: currentTime.toISOString() });
+});
 
-
+// Root endpoint
 app.get("/", (req, res) => res.send("Hello"));
 
 const PORT = process.env.PORT || 5002;
