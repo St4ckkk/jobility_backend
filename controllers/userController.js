@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const Skill = require("../models/Skill");
+const Agent = require("../models/Agent");
 const CryptoJs = require("crypto-js");
 
 module.exports = {
@@ -44,4 +46,120 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-};
+
+  addSkill: async (req, res) => {
+    const newSkill = new Skills({
+      userId: req.user.id,
+      skill: req.body.skill,
+    });
+
+    try {
+      await newSkill.save();
+      await User.findByIdAndUpdate(req.user.id, { $set: { skills: true } })
+      res.status(200).json({ status: true });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+
+  getSkills: async (req, res) => {
+    const userId = req.user.id
+    try {
+      const skills = await Skill.find({ userId: userId }, { createdAt: 0, updatedAt: 0, __v: 0 });
+
+      if (skills.lenght === 0) {
+        return res.status(404).json([]);
+      }
+      res.status(200).json(skills);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+
+  deleteSkills: async (req, res) => {
+    const id = req.params.id;
+    try {
+      await Skills.findByIdAndDelete(id)
+      res.status(200).json({ status: true });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+
+  addAgent: async (req, res) => {
+    const newAgent = new Agent({
+      userId: req.user.id,
+      uid: req.body.uid,
+      working_hrs: req.body.working_hrs,
+      company: req.body.company
+    });
+
+
+    try {
+      await newAgent.save();
+      await User.findByIdAndUpdate(req.user.id, { $set: { agent: true } })
+      res.status(200).json({ status: true });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  updateAgent: async (req, res) => {
+    const id = req.params.id;
+
+
+    try {
+      const updatedAgent = await Agent.findByIdAndUpdate(id, {
+        working_hrs: req.body.working_hrs,
+        hq_address: req.body.hq_address,
+        company: req.body.company
+      }, { new: true })
+
+      if (!updatedAgent) {
+        return res.status(404).json({ status: false, message: 'Agent not found' })
+      }
+
+      res.status(200).json({ status: true })
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  getAgent: async (req, res) => {
+    // const id = req.user.id;
+    try {
+      const agentData = await Agent.find({ uid: req.params.uid }, { createdt: 0, updatedAt: 0, __v: 0 });
+
+      const agent = agentData[0];
+      res.status(200).json({ status: true, agent });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  getAgents: async (req, res) => {
+    const userId = req.user.id;
+    try {
+      const agents = await User.aggregate([
+        { $match: { isAgent: true } },
+        { $sample: { size: 7 } },
+        {
+          $project: {
+            _id: 0,
+            username: 1,
+            profile: 1,
+            uid: 1
+          }
+        }
+      ]);
+      res.status(200).json({ status: true, agents });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
+
+
+}
