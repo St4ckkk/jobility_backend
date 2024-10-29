@@ -12,7 +12,7 @@ const bodyParser = require('body-parser')
 dotenv.config();
 
 const admin = require('firebase-admin');
-const serviceAccount = require('./jobility-c1d00-firebase-adminsdk-jm7dq-4ada377134.json');
+const serviceAccount = require('./jobility-c1d00-firebase-adminsdk-jm7dq-6733292fbd.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
