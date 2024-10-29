@@ -6,21 +6,25 @@ const admin = require('firebase-admin');
 module.exports = {
   createUser: async (req, res) => {
     const user = req.body;
+    console.log("createUser function started");
 
     try {
+      console.log("Checking if user already exists");
       await admin.auth().getUserByEmail(user.email);
+      console.log("User already exists");
       return res.status(400).json({ message: "User already exists." });
     } catch (err) {
+      console.log("Error in getUserByEmail:", err);
       if (err.code === 'auth/user-not-found') {
         try {
+          console.log("Creating new user");
           const userResponse = await admin.auth().createUser({
             email: user.email,
             password: user.password,
             emailVerified: false,
             disabled: false,
           });
-
-          console.log(userResponse.uid);
+          console.log("User created with UID:", userResponse.uid);
 
           const newUser = new User({
             uid: userResponse.uid,
@@ -30,12 +34,16 @@ module.exports = {
             password: CryptoJs.AES.encrypt(user.password, process.env.SECRET_KEY).toString(),
           });
 
+          console.log("Saving new user to database");
           await newUser.save();
+          console.log("New user saved successfully");
           return res.status(201).json({ status: true });
         } catch (err) {
+          console.log("Error in createUser or save:", err);
           return res.status(500).json({ error: 'An error occurred while creating the account.' });
         }
       } else {
+        console.log("Unexpected error:", err);
         return res.status(500).json({ error: 'An unexpected error occurred.' });
       }
     }
