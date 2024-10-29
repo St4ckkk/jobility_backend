@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const userController = require("../controllers/userController");
-const { verifyAndAuthorization, verifyToken, verifyAndAdmin } = require("../middleware/verifyToken");
+const { verifyAndAuthorization } = require("../middleware/verifyToken");
 
 
 
@@ -8,10 +8,10 @@ const { verifyAndAuthorization, verifyToken, verifyAndAdmin } = require("../midd
 router.put("/", verifyAndAuthorization, userController.updateUser);
 
 // Delete User
-router.delete("/", verifyAndAuthorization, userController.deleteUser);
+router.delete("/:id", verifyAndAuthorization, userController.deleteUser);
 
 // Get User
 router.get("/", verifyAndAuthorization, userController.getUser);
-router.get("/all/", verifyAndAuthorization, userController.getAllUsers);
+// router.get("/all/", verifyAndAuthorization, userController.getAllUsers);
 
 module.exports = router

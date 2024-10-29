@@ -1,5 +1,5 @@
-const User = require("../models/User");
 const CryptoJs = require("crypto-js");
+const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const admin = require('firebase-admin');
 
@@ -55,16 +55,16 @@ module.exports = {
 
       if (!user) {
         return res.status(400).json({ message: 'User not found' });
-
       }
 
-      const decryptedPassword = CryptoJs.AES.decrypt(user.password, process.env.SECRET_KEY);
-      const depassword = decryptedPassword.toString(CryptoJS.enc.Utf8);
+      // Ensure you use the same key for decryption as you did for encryption
+      const decryptedPassword = CryptoJs.AES.decrypt(user.password, process.env.JWT_SEC);
+      const depassword = decryptedPassword.toString(CryptoJs.enc.Utf8); // Use CryptoJs here
 
-      if (depassword != req.body.password) {
+      if (depassword !== req.body.password) {
         return res.status(400).json({
           message: 'Invalid Password'
-        })
+        });
       }
 
       const userToken = jwt.sign({
@@ -74,10 +74,11 @@ module.exports = {
         uid: user.uid,
       }, process.env.JWT_SEC, { expiresIn: '21d' });
 
-      const { password, isAdmin, ...others } = user._doc
+      const { password, isAdmin, ...others } = user._doc;
 
-      res.status(200).json({ ...others, userToken })
+      res.status(200).json({ ...others, userToken });
     } catch (err) {
+      console.error("Error during login:", err); // More detailed error logging
       return res.status(500).json({ error: 'An unexpected error occurred while logging in.' });
     }
   }

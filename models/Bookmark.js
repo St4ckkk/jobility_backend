@@ -1,17 +1,12 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const BookMarkSchema = new mongoose.Schema(
-  {
-    job: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Job",
-    },
-    userId: {
-      type: String,
-      required: true,
-    },
+const BookmarkSchema = new mongoose.Schema({
+  job: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Job'
   },
-  { timestamps: true }
-);
+  userId: { type: String, required: true },
 
-module.exports = mongoose.model("BookMark", BookMarkSchema);
+}, { timestamps: true });
+
+module.exports = mongoose.model('Bookmark', BookmarkSchema);

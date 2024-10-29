@@ -6,10 +6,10 @@ const { verifyAndAuthorization } = require("../middleware/verifyToken");
 router.post("/", verifyAndAuthorization, bookmarkController.createBookmark);
 
 
-router.delete("/:id", bookmarkController.deleteBookmark);
+// router.delete("/:id", bookmarkController.deleteBookmark);
 
 
-router.get("/:userId", bookmarkController.getBookmarks);
+// router.get("/:userId", bookmarkController.getBookmarks);
 
 
 

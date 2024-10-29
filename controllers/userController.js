@@ -3,23 +3,15 @@ const CryptoJs = require("crypto-js");
 
 module.exports = {
   updateUser: async (req, res) => {
-    if (req.body.password) {
-      req.body.password = CryptoJs.AES.encrypt(
-        req.body.password,
-        process.env.SECRET_KEY
-      ).toString();
-    }
-
     try {
-      const updateUser = await User.findByIdAndUpdate(
+      await User.findByIdAndUpdate(
         req.user.id,
         {
           $set: req.body,
         },
         { new: true }
       );
-      const { password, __v, createdAt, ...others } = updateUser._doc;
-      res.status(200).json({ ...others });
+      res.status(200).json({ status: true })
     } catch (err) {
       res.status(500).json(err);
     }
@@ -28,7 +20,7 @@ module.exports = {
   deleteUser: async (req, res) => {
     try {
       await User.findByIdAndDelete(req.user.id);
-      res.status(200).json("Account Successfully Deleted");
+      res.status(200).json({ status: true });
     } catch (err) {
       res.status(500).json(err);
     }
@@ -36,8 +28,8 @@ module.exports = {
 
   getUser: async (req, res) => {
     try {
-      const user = await User.findById(req.user.id);
-      const { password, __v, updatedAt, ...userData } = user._doc;
+      const profile = await User.findById(req.user.id);
+      const { password, __v, updatedAt, ...userData } = profile._doc;
       res.status(200).json(userData);
     } catch (err) {
       res.status(500).json(err);

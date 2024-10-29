@@ -1,29 +1,17 @@
-const router = require("express").Router();
+const router = require('express').Router();
+const jobController = require('../controllers/jobController');
 
-const jobController = require("../controllers/jobController");
+router.post('/', jobController.createJob);
 
-const {
-  verifyAndAuthorization,
-  verifyToken,
-  verifyAndAdmin,
-} = require("../middleware/verifyToken");
+router.get('/', jobController.getAllJobs);
 
-// Route to post a new job, accessible only by admin and Agent
-router.post("/", jobController.postJob);
+router.get('/search/:key', jobController.searchJobs);
 
-// Route to update a job by ID, accessible only by admin 
-router.put("/:id", jobController.updateJob);
+router.get('/:id', jobController.getJob);
 
-// Route to delete a job by ID, accessible only by admin
-router.delete("/:id", jobController.deleteJob);
+router.put('/:id', jobController.updateJob);
 
-// Route to get a job by ID
-router.get("/:id", jobController.getJob);
+router.delete('/:id', jobController.createJob);
 
-// Route to get all jobs
-router.get("/", jobController.getAllJobs);
-
-// Route to search jobs by key
-router.get("/search/:key", jobController.searchJobs);
 
 module.exports = router;

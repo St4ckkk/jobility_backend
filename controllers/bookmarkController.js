@@ -1,49 +1,25 @@
-const Bookmark = require("../models/Bookmark");
-const Job = require("../models/Job");
-
-
+const Bookmark = require('../models/Bookmark')
+const Job = require('../models/Job')
 
 module.exports = {
-
     createBookmark: async (req, res) => {
-        const jobId = req.body.job;
-        try {
-            const job = await Job.finById(jobId);
+        const jobId = req.body.jobId;
+        const userId = req.user.id;
 
+        try {
+            const job = await Job.findById(jobId);
 
             if (!job) {
-                return res.status(404).json({ error: "Job not found" });
+                return res.status(400).json({ message: 'Job not found' });
             }
 
-            const newBookmark = new Bookmark({ job: job, userId: req.user.id });
-            const savedBookmark = await newBookmark.save();
-            const { __v, updatedAt, ...newBookmarkInfo } = savedBookmark._doc;
-            res.status(200).json(newBookmarkInfo);
-        } catch (err) {
-            res.status(500).json(err);
-        }
-    },
+            const newBookmark = new Bookmark({ job: jobId, user: userId });
 
-    deleteBookmark: async (req, res) => {
-        try {
-            await Bookmark.findByIdAndDelete(req.params.id);
-            res.status(200).json("Bookmark Successfully Deleted");
-        } catch (err) {
-            res.status(500).json(err);
-        }
-    },
+            const saveBookmark = await newBookmark.save();
 
-
-    getBookmarks: async (req, res) => {
-        try {
-
-            const bookmarks = await Bookmark.find({ userId: req.params.userId });
-            res.status(200).json(bookmarks);
-
-        } catch (err) {
-            res.status(500).json(err);
+            return res.status(200).json({ status: true, bookmarkId: saveBookmark._id })
+        } catch (error) {
+            return res.status(500).json({ message: error.message })
         }
     }
-
-
 }

@@ -25,19 +25,19 @@ const verifyAndAuthorization = (req, res, next) => {
     if (req.user.id || req.user.isAdmin) {
       next();
     } else {
-      res.status(403).json({ message: "You are not allowed to do that!" });
+      res.status(403).json({ message: "You are not authorized to access" });
     }
   });
 };
 
-const verifyAndAdmin = (req, res, next) => {
+const verifyAgent = (req, res, next) => {
   verifyToken(req, res, () => {
     if (req.user.isAdmin || req.user.isAgent) {
       next();
     } else {
-      res.status(403).json({ message: "You are not allowed to do that!" });
+      res.status(403).json({ message: "You are not authorized to access" });
     }
-  });
+  }); 
 };
 
-module.exports = { verifyToken, verifyAndAuthorization, verifyAndAdmin };
+module.exports = { verifyToken, verifyAndAuthorization, verifyAgent };

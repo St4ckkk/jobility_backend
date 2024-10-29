@@ -1,51 +1,36 @@
-const express = require("express");
-const app = express();
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
-const authRoute = require("./routes/auth");
-const userRoute = require("./routes/user");
-const jobRoute = require("./routes/job");
-const bookmarkRoute = require('./routes/bookmark');
-const bodyParser = require('body-parser');
+const express = require('express')
+const app = express()
+const port = 3000
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+const jobRouter = require('./routes/job')
+const authRouter = require('./routes/auth')
+const userRouter = require('./routes/user');
+const bookmarkRouter = require('./routes/bookmark')
+const bodyParser = require('body-parser')
 
 dotenv.config();
 
 const admin = require('firebase-admin');
-const serviceAccount = require('./jobility-95279-firebase-adminsdk-aua55-884336b150.json');
+const serviceAccount = require('./jobility-95279-firebase-adminsdk-aua55-348e86111a.json');
 
-// Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-// Connect to MongoDB
-mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("DB connected"))
-  .catch((err) => {
-    console.error("Error connecting to MongoDB:", err);
-  });
+mongoose.connect(process.env.MONGO_URL)
+  .then(() => console.log('Connect to Db'))
+  .catch((err) => console.log(err));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use("/api/", authRoute);
-app.use("/api/users", userRoute);
-app.use("/api/jobs", jobRoute);
-app.use("/api/bookmarks", bookmarkRoute);
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
-
-app.get("/time", (req, res) => {
-  const currentTime = new Date();
-  res.json({ currentTime: currentTime.toISOString() });
-});
+app.use('/api/jobs', jobRouter)
+app.use('/api/', authRouter)
+app.use('/api/users', userRouter)
+app.use('/api/bookmarks', bookmarkRouter)
 
 
 
-app.get("/", (req, res) => res.send("Hello"));
-
-const PORT = process.env.PORT || 5002;
-
-app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));
+app.listen(process.env.PORT || port, () =>
+  console.log(`The Hub is listening on port ${process.env.PORT}!`))
