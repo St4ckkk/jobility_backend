@@ -17,6 +17,9 @@ router.get("/", verifyAndAuthorization, userController.getUser);
 // router.get("/all/", verifyAndAuthorization, userController.getAllUsers);
 
 
+router.post("/skills", verifyAndAuthorization, userController.addSkill);
+router.post("/skills", verifyAndAuthorization, userController.getSkills);
+router.post("/skills/:id", verifyAndAuthorization, userController.deleteSkills);
 router.post("/agents", verifyAndAuthorization, userController.addAgent);
 router.put("/agents/:id", verifyAndAuthorization, userController.updateAgent);
 router.get("/agents/:uid", verifyAndAuthorization, userController.getAgent);
