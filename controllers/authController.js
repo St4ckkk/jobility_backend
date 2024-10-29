@@ -40,11 +40,11 @@ module.exports = {
           return res.status(201).json({ status: true });
         } catch (err) {
           console.log("Error in createUser or save:", err);
-          return res.status(500).json({ error: 'An error occurred while creating the account.' });
+          return res.status(500).json({ error: 'An error occurred while creating the account.', details: err.message });
         }
       } else {
         console.log("Unexpected error:", err);
-        return res.status(500).json({ error: 'An unexpected error occurred.' });
+        return res.status(500).json({ error: 'An unexpected error occurred.', details: err.message });
       }
     }
   },
