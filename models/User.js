@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    fullname: {
+    name: {
       type: String,
       required: true,
     },
@@ -23,6 +23,14 @@ const UserSchema = new mongoose.Schema(
     location: {
       type: String,
       required: false,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    updated: {
+      type: Boolean,
+      default: false,
     },
     isAdmin: {
       type: Boolean,
