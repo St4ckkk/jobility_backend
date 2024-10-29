@@ -11,7 +11,7 @@ const bodyParser = require('body-parser');
 dotenv.config();
 
 const admin = require('firebase-admin');
-const serviceAccount = require('./serviceAccountKey.json');
+const serviceAccount = require('./jobility-95279-firebase-adminsdk-aua55-884336b150.json');
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
@@ -24,7 +24,7 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("db connected"))
+  .then(() => console.log("DB connected"))
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err);
   });
@@ -36,13 +36,14 @@ app.use("/api/users", userRoute);
 app.use("/api/jobs", jobRoute);
 app.use("/api/bookmarks", bookmarkRoute);
 
-// Endpoint to check server time
+
 app.get("/time", (req, res) => {
   const currentTime = new Date();
   res.json({ currentTime: currentTime.toISOString() });
 });
 
-// Root endpoint
+
+
 app.get("/", (req, res) => res.send("Hello"));
 
 const PORT = process.env.PORT || 5002;
