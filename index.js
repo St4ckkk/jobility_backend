@@ -1,4 +1,3 @@
-
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
@@ -8,18 +7,23 @@ const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const jobRoute = require("./routes/job");
 const bookmarkRoute = require('./routes/bookmark');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 dotenv.config();
 
-// Initialize Firebase Admin with credentials from environment variables
+// Initialize Firebase Admin with proper private key handling
 const initializeFirebase = () => {
   try {
+    // Method 1: If using individual environment variables
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY
+      ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+      : undefined;
+
     const serviceAccountConfig = {
-      type: process.env.FIREBASE_TYPE,
+      type: "service_account",
       project_id: process.env.FIREBASE_PROJECT_ID,
       private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-      private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      private_key: privateKey,
       client_email: process.env.FIREBASE_CLIENT_EMAIL,
       client_id: process.env.FIREBASE_CLIENT_ID,
       auth_uri: process.env.FIREBASE_AUTH_URI,
@@ -29,13 +33,28 @@ const initializeFirebase = () => {
       universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN
     };
 
+    // Method 2: If using a single JSON environment variable
+    // Uncomment this if you're using FIREBASE_SERVICE_ACCOUNT
+    /*
+    const serviceAccountConfig = JSON.parse(
+      process.env.FIREBASE_SERVICE_ACCOUNT
+    );
+    */
+
+    console.log('Initializing Firebase with project:', serviceAccountConfig.project_id);
+    console.log('Using client email:', serviceAccountConfig.client_email);
+    
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccountConfig)
     });
+    
     console.log("Firebase Admin initialized successfully");
   } catch (error) {
-    console.error("Error initializing Firebase Admin:", error);
-    // You might want to throw the error here depending on your error handling strategy
+    console.error("Error initializing Firebase Admin:");
+    console.error("Error message:", error.message);
+    console.error("Error stack:", error.stack);
+    // Rethrow the error to prevent the server from starting with invalid credentials
+    throw error;
   }
 };
 
@@ -62,7 +81,15 @@ app.use("/api/", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/jobs", jobRoute);
 app.use("/api/bookmarks", bookmarkRoute);
-app.get("/", (req, res) => res.send("Hello"));
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({
+    error: "An unexpected error occurred.",
+    details: err.message
+  });
+});
 
 // Server startup
 const PORT = process.env.PORT || 5002;
