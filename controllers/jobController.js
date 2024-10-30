@@ -91,4 +91,16 @@ module.exports = {
       res.status(500).json(error);
     }
   },
+
+
+  getAgentJobs: async (req, res) => {
+    const uid = req.params.id;
+
+    try {
+      const agentJobs = await Job.findById({ agentId: uid }, { createdAt: 0, updatedAt: 0, __V: 0 }).sort({ createdAt: -1 });
+      res.status(200).json(agentJobs)
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
 };
