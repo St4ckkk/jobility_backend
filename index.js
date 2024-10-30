@@ -5,12 +5,14 @@ const admin = require('firebase-admin');
 const mongoose = require("mongoose");
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
+const appliedRoute = require("./routes/apply");
 const jobRoute = require("./routes/job");
 const bookmarkRoute = require('./routes/bookmark');
-const appliedRouter = require('./routes/apply');
-const bodyParser = require('body-parser');
+
+const bodyParser = require('body-parser')
 
 dotenv.config();
+
 
 // Initialize Firebase Admin with proper private key handling
 const initializeFirebase = () => {
@@ -62,37 +64,29 @@ const initializeFirebase = () => {
 // Initialize Firebase
 initializeFirebase();
 
-// MongoDB connection
+
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
-  .then(() => console.log("MongoDB connected"))
+  .then(() => console.log("db connected"))
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err);
   });
 
-// Middleware setup
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Routes
 app.use("/api/", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/jobs", jobRoute);
+app.use("/api/applied", appliedRoute);
 app.use("/api/bookmarks", bookmarkRoute);
-app.use("/api/applied", appliedRouter);
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Error:', err);
-  res.status(500).json({
-    error: "An unexpected error occurred.",
-    details: err.message
-  });
-});
 
-// Server startup
+
+app.get("/", (req, res) => res.send("Hello"));
+
 const PORT = process.env.PORT || 5002;
-app.listen(PORT, () => console.log(`Server listening on port ${PORT}!`));
+
+app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));
