@@ -7,6 +7,7 @@ const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const jobRoute = require("./routes/job");
 const bookmarkRoute = require('./routes/bookmark');
+const appliedRouter = require('./routes/apply');
 const bodyParser = require('body-parser');
 
 dotenv.config();
@@ -28,7 +29,7 @@ const initializeFirebase = () => {
       client_id: process.env.FIREBASE_CLIENT_ID,
       auth_uri: process.env.FIREBASE_AUTH_URI,
       token_uri: process.env.FIREBASE_TOKEN_URI,
-      auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_CERT_URL, 
+      auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_CERT_URL,
       client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL,
       universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN
     };
@@ -81,6 +82,7 @@ app.use("/api/", authRoute);
 app.use("/api/users", userRoute);
 app.use("/api/jobs", jobRoute);
 app.use("/api/bookmarks", bookmarkRoute);
+app.use("/api/applied", appliedRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
