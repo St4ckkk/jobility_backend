@@ -64,29 +64,29 @@ module.exports = {
 
   addSkill: async (req, res) => {
     const newSkill = new Skill({
-        userId: req.user.id,
-        skill: req.body.skill,
+      userId: req.user.id,
+      skill: req.body.skill,
     });
 
     try {
-        await newSkill.save();
-        await User.findByIdAndUpdate(req.user.id, { $set: { skills: true } });
-        res.status(200).json({ status: true });
+      await newSkill.save();
+      await User.findByIdAndUpdate(req.user.id, { $set: { skills: true } });
+      res.status(200).json({ status: true });
     } catch (err) {
-        res.status(500).json(err);
+      res.status(500).json(err);
     }
-},
+  },
 
-// Replace Skills with Skill in deleteSkills
-deleteSkills: async (req, res) => {
+  // Replace Skills with Skill in deleteSkills
+  deleteSkills: async (req, res) => {
     const id = req.params.id;
     try {
-        await Skill.findByIdAndDelete(id);
-        res.status(200).json({ status: true });
+      await Skill.findByIdAndDelete(id);
+      res.status(200).json({ status: true });
     } catch (err) {
-        res.status(500).json(err);
+      res.status(500).json(err);
     }
-},
+  },
 
 
   getSkills: async (req, res) => {
@@ -175,7 +175,7 @@ deleteSkills: async (req, res) => {
         {
           $project: {
             _id: 0,
-            username: 1,
+            name: 1,
             profile: 1,
             uid: 1
           }
