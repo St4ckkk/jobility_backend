@@ -97,10 +97,12 @@ module.exports = {
     const uid = req.params.id;
 
     try {
-      const agentJobs = await Job.findById({ agentId: uid }, { createdAt: 0, updatedAt: 0, __V: 0 }).sort({ createdAt: -1 });
-      res.status(200).json(agentJobs)
+      const agentJobs = await Job.find({ agentId: uid }, { createdAt: 0, updatedAt: 0, __v: 0 }).sort({ createdAt: -1 });
+      console.log(agentJobs);
+      res.status(200).json(agentJobs);
     } catch (err) {
       res.status(500).json(err);
     }
   }
+
 };

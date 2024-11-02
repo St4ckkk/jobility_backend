@@ -119,6 +119,7 @@ module.exports = {
     const newAgent = new Agent({
       userId: req.user.id,
       uid: req.body.uid,
+      hq_address: req.body.hq_address,
       working_hrs: req.body.working_hrs,
       company: req.body.company
     });
@@ -160,14 +161,15 @@ module.exports = {
       const agentData = await Agent.find({ uid: req.params.uid }, { createdt: 0, updatedAt: 0, __v: 0 });
 
       const agent = agentData[0];
-      res.status(200).json({ status: true, agent });
+      console.log(agent);
+      res.status(200).json(agent);
     } catch (err) {
       res.status(500).json(err);
     }
   },
 
   getAgents: async (req, res) => {
-    const userId = req.user.id;
+    // const userId = req.user.id;
     try {
       const agents = await User.aggregate([
         { $match: { isAgent: true } },
@@ -181,6 +183,7 @@ module.exports = {
           }
         }
       ]);
+      console.log(agents); // Log to see if `uid` shows up here
       res.status(200).json({ status: true, agents });
     } catch (err) {
       res.status(500).json(err);
