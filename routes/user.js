@@ -23,7 +23,7 @@ router.delete("/skills/:id", verifyAndAuthorization, userController.deleteSkills
 router.post("/agents", verifyAndAuthorization, userController.addAgent);
 router.put("/agents/:id", verifyAndAuthorization, userController.updateAgent);
 
-router.get("/agent/:uid", verifyAndAuthorization, userController.getAgent);
+router.get("/agents/:uid", verifyAndAuthorization, userController.getAgent);
 
 router.get("/agents", verifyAndAuthorization, userController.getAgents);
 
