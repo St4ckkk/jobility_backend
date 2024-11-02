@@ -208,10 +208,30 @@ module.exports = {
 
     try {
       await newReview.save();
-      res.status(200).json({ status: true, Review: newReview });
+      res.status(200).json({ status: true, review: newReview });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
+
+  getReviewsForJob: async (req, res) => {
+    const { jobId } = req.params;
+
+    try {
+      const reviews = await Review.find({ job: jobId })
+        .populate('reviewer', 'name profile')
+        .populate('job', 'title')
+        .populate('agent', 'uid company'); // Ensure you are populating the correct fields
+
+      console.log(reviews); // Log the reviews to check if agent is null
+
+      if (reviews.length === 0) {
+        return res.status(404).json({ status: false, message: 'No reviews found for this job' });
+      }
+
+      res.status(200).json({ status: true, reviews });
     } catch (err) {
       res.status(500).json(err);
     }
   }
-
 }
