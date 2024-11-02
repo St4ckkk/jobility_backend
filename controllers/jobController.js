@@ -94,14 +94,24 @@ module.exports = {
 
 
   getAgentJobs: async (req, res) => {
-    const uid = req.params.id;
+    const uid = req.params.uid;  // Changed from id to uid to match route parameter
 
     try {
-      const agentJobs = await Job.find({ agentId: uid }, { createdAt: 0, updatedAt: 0, __v: 0 }).sort({ createdAt: -1 });
-      console.log(agentJobs);
+      const agentJobs = await Job.find(
+        { agentId: uid },
+        { createdAt: 0, updatedAt: 0, __v: 0 }
+      ).sort({ createdAt: -1 });
+
+      console.log('Agent Jobs:', agentJobs);  // Enhanced logging
+
+      if (!agentJobs.length) {
+        console.log(`No jobs found for agent ${uid}`);  // Debug log
+      }
+
       res.status(200).json(agentJobs);
     } catch (err) {
-      res.status(500).json(err);
+      console.error('Error fetching agent jobs:', err);  // Enhanced error logging
+      res.status(500).json({ error: err.message });
     }
   }
 

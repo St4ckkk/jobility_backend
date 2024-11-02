@@ -85,6 +85,7 @@ app.use("/api/bookmarks", bookmarkRoute);
 
 
 
+
 app.get("/", (req, res) => res.send("Hello"));
 
 const PORT = process.env.PORT || 5002;

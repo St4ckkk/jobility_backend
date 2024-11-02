@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Skill = require("../models/Skill");
 const Agent = require("../models/Agent");
+const Review = require("../models/Review");
 const CryptoJs = require("crypto-js");
 
 module.exports = {
@@ -188,7 +189,29 @@ module.exports = {
     } catch (err) {
       res.status(500).json(err);
     }
-  }
+  },
 
+  createReview: async (req, res) => {
+    const { job, agent, rating, comment } = req.body;
+
+    if (!job && !agent) {
+      return res.status(400).json({ status: false, message: 'Job or Agent is required' });
+    }
+
+    const newReview = new Review({
+      reviewer: req.user.id,
+      job: job || null,
+      agent: agent || null,
+      rating,
+      comment
+    });
+
+    try {
+      await newReview.save();
+      res.status(200).json({ status: true, Review: newReview });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  }
 
 }

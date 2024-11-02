@@ -27,5 +27,6 @@ router.get("/agents/:uid", verifyAndAuthorization, userController.getAgent);
 
 router.get("/agents", verifyAndAuthorization, userController.getAgents);
 
+router.post("/reviews", verifyAndAuthorization, userController.createReview);
 
 module.exports = router
