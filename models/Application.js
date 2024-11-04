@@ -9,6 +9,11 @@ const ApplicationSchema = new mongoose.Schema({
     job: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Job',
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'approved', 'rejected'],
+        default: 'pending'
     }
 }, { timestamps: true });
 
