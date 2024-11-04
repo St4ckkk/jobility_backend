@@ -49,8 +49,7 @@ const JobSchema = new mongoose.Schema(
       required: true,
     },
     agentId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
       required: true,
     },
     acceptedDisabilities: {
