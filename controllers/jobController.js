@@ -1,4 +1,6 @@
+const mongoose = require("mongoose");
 const Job = require('../models/Job');
+const Agent = require('../models/Agent');
 
 
 module.exports = {
@@ -94,23 +96,62 @@ module.exports = {
 
 
   getAgentJobs: async (req, res) => {
-    const uid = req.params.uid;  // Changed from id to uid to match route parameter
+    const uid = req.params.uid;
 
     try {
+      // First, find the agentId based on uid
+      const agent = await Agent.findOne({ uid: uid });
+      if (!agent) {
+        return res.status(404).json({ error: "Agent not found." });
+      }
+
+      const agentId = agent._id;
+
+      // Now use agentId to fetch jobs
       const agentJobs = await Job.find(
-        { agentId: uid },
+        { agentId: agentId },
         { createdAt: 0, updatedAt: 0, __v: 0 }
       ).sort({ createdAt: -1 });
 
-      console.log('Agent Jobs:', agentJobs);  // Enhanced logging
+      console.log('Agent Jobs:', agentJobs);
 
       if (!agentJobs.length) {
-        console.log(`No jobs found for agent ${uid}`);  // Debug log
+        console.log(`No jobs found for agent ${agentId}`);
       }
 
       res.status(200).json(agentJobs);
     } catch (err) {
-      console.error('Error fetching agent jobs:', err);  // Enhanced error logging
+      console.error('Error fetching agent jobs:', err);
+      res.status(500).json({ error: err.message });
+    }
+  },
+  getAgentJobs: async (req, res) => {
+    const uid = req.params.uid;
+
+    try {
+      // First, find the agentId based on uid
+      const agent = await Agent.findOne({ uid: uid });
+      if (!agent) {
+        return res.status(404).json({ error: "Agent not found." });
+      }
+
+      const agentId = agent._id;
+
+      // Now use agentId to fetch jobs
+      const agentJobs = await Job.find(
+        { agentId: agentId },
+        { createdAt: 0, updatedAt: 0, __v: 0 }
+      ).sort({ createdAt: -1 });
+
+      console.log('Agent Jobs:', agentJobs);
+
+      if (!agentJobs.length) {
+        console.log(`No jobs found for agent ${agentId}`);
+      }
+
+      res.status(200).json(agentJobs);
+    } catch (err) {
+      console.error('Error fetching agent jobs:', err);
       res.status(500).json({ error: err.message });
     }
   }
