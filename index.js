@@ -35,7 +35,7 @@ const initializeFirebase = () => {
       client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL,
       universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN
     };
-
+  
     // Method 2: If using a single JSON environment variable
     // Uncomment this if you're using FIREBASE_SERVICE_ACCOUNT
     /*
@@ -44,14 +44,14 @@ const initializeFirebase = () => {
     );
     */
 
-    console.log('Initializing Firebase with project:', serviceAccountConfig.project_id);
-    console.log('Using client email:', serviceAccountConfig.client_email);
+    // console.log('Initializing Firebase with project:', serviceAccountConfig.project_id);
+    // console.log('Using client email:', serviceAccountConfig.client_email);
 
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccountConfig)
     });
 
-    console.log("Firebase Admin initialized successfully");
+    // console.log("Firebase Admin initialized successfully");
   } catch (error) {
     console.error("Error initializing Firebase Admin:");
     console.error("Error message:", error.message);
