@@ -2,17 +2,17 @@ const mongoose = require("mongoose");
 
 const ReviewSchema = new mongoose.Schema(
     {
-        reviewer: {
+        reviewerId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: true,
         },
-        job: {
+        jobId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Job",
             required: false,
         },
-        agent: {
+        agentId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Agent",
             required: false,
