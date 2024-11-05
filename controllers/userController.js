@@ -221,7 +221,7 @@ module.exports = {
       const reviews = await Review.find({ job: jobId })
         .populate('reviewer', 'name profile')
         .populate('job', 'title')
-        .populate('agent', 'uid company'); // Ensure you are populating the correct fields
+        .populate('agent', 'uid company');
 
       console.log(reviews); // Log the reviews to check if agent is null
 
