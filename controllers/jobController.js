@@ -99,55 +99,21 @@ module.exports = {
     const uid = req.params.uid;
 
     try {
-      // First, find the agentId based on uid
+      // Find the agent using uid
       const agent = await Agent.findOne({ uid: uid });
       if (!agent) {
         return res.status(404).json({ error: "Agent not found." });
       }
 
-      const agentId = agent._id;
+      const userId = agent.userId; // Get userId to match agentId in Job schema
 
-      // Now use agentId to fetch jobs
+      // Fetch jobs using userId as agentId
       const agentJobs = await Job.find(
-        { agentId: agentId },
+        { agentId: userId },
         { createdAt: 0, updatedAt: 0, __v: 0 }
       ).sort({ createdAt: -1 });
 
-      console.log('Agent Jobs:', agentJobs);
-
-      if (!agentJobs.length) {
-        console.log(`No jobs found for agent ${agentId}`);
-      }
-
-      res.status(200).json(agentJobs);
-    } catch (err) {
-      console.error('Error fetching agent jobs:', err);
-      res.status(500).json({ error: err.message });
-    }
-  },
-  getAgentJobs: async (req, res) => {
-    const uid = req.params.uid;
-
-    try {
-      // First, find the agentId based on uid
-      const agent = await Agent.findOne({ uid: uid });
-      if (!agent) {
-        return res.status(404).json({ error: "Agent not found." });
-      }
-
-      const agentId = agent._id;
-
-      // Now use agentId to fetch jobs
-      const agentJobs = await Job.find(
-        { agentId: agentId },
-        { createdAt: 0, updatedAt: 0, __v: 0 }
-      ).sort({ createdAt: -1 });
-
-      console.log('Agent Jobs:', agentJobs);
-
-      if (!agentJobs.length) {
-        console.log(`No jobs found for agent ${agentId}`);
-      }
+      console.log('Fetched Agent Jobs:', agentJobs);
 
       res.status(200).json(agentJobs);
     } catch (err) {
@@ -155,5 +121,6 @@ module.exports = {
       res.status(500).json({ error: err.message });
     }
   }
+
 
 };
