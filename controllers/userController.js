@@ -326,7 +326,7 @@ module.exports = {
     }
   },
 
- uploadResume: async (req, res) => {
+  uploadResume: async (req, res) => {
     upload(req, res, async function (err) {
       if (err) {
         return res.status(400).json({ status: false, message: err });
