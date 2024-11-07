@@ -57,6 +57,14 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    pwdIdImage: {
+      type: String,
+      required: false,
+    },
+    resume: {
+      type: String,
+      required: false,
+    },
   },
   { timestamps: true }
 );

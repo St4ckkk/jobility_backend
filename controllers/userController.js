@@ -1,8 +1,26 @@
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 const User = require("../models/User");
 const Skill = require("../models/Skill");
 const Agent = require("../models/Agent");
 const Review = require("../models/Review");
-const CryptoJs = require("crypto-js");
+
+const storage = multer.memoryStorage(); // Store file in memory
+const upload = multer({
+  storage: storage,
+  fileFilter: function (req, file, cb) {
+    const filetypes = /pdf/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb("Error: File upload only supports the following filetypes - " + filetypes);
+    }
+  },
+}).single("resume");
 
 module.exports = {
   updateUser: async (req, res) => {
@@ -308,4 +326,32 @@ module.exports = {
     }
   },
 
+ uploadResume: async (req, res) => {
+    upload(req, res, async function (err) {
+      if (err) {
+        return res.status(400).json({ status: false, message: err });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({ status: false, message: "No file uploaded" });
+      }
+
+      try {
+        const userId = req.user.id;
+        const resumeBase64 = req.file.buffer.toString('base64');
+
+        // Update user's resume with base64 string
+        const updatedUser = await User.findByIdAndUpdate(
+          userId,
+          { $set: { resume: resumeBase64 } },
+          { new: true }
+        );
+
+        res.status(200).json({ status: true, user: updatedUser });
+      } catch (err) {
+        console.error("Error uploading resume:", err);
+        res.status(500).json({ status: false, message: "Error uploading resume", error: err.message });
+      }
+    });
+  },
 };
