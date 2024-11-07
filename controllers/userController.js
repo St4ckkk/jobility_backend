@@ -336,9 +336,8 @@ module.exports = {
       }
       try {
         const userId = req.user.id;
-        const resumeBase64 = req.file.buffer.toString('base64'); // Ensure proper base64 encoding
+        const resumeBase64 = req.file.buffer.toString('base64');
 
-        // Save the resume as a base64 string in the user document
         const updatedUser = await User.findByIdAndUpdate(
           userId,
           { $set: { resume: resumeBase64 } },
