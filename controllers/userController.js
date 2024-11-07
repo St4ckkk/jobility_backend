@@ -334,7 +334,6 @@ module.exports = {
       if (!req.file) {
         return res.status(400).json({ status: false, message: "No file uploaded" });
       }
-
       try {
         const userId = req.user.id;
         const resumeBase64 = req.file.buffer.toString('base64'); // Ensure proper base64 encoding
