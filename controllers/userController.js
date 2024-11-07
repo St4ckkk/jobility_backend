@@ -344,7 +344,6 @@ module.exports = {
           { $set: { resume: resumeBase64 } },
           { new: true }
         );
-
         res.status(200).json({ status: true, user: updatedUser });
       } catch (err) {
         console.error("Error uploading resume:", err);
