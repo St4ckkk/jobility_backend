@@ -253,38 +253,46 @@ module.exports = {
 
   updateProfile: async (req, res) => {
     try {
-      const { uid } = req.params;
-      const { username, name, email, profile, skills } = req.body;
+      const { id } = req.params;
+      const { username, name, email, profileImage, skills } = req.body;
 
-      // Find user by uid
-      const user = await User.findOne({ uid });
+      console.log('Incoming request:', req.body);
+      console.log('User ID:', id);
+
+      // Find user by id
+      const user = await User.findById(id);
       if (!user) {
+        console.log('User not found');
         return res.status(404).json({ status: false, message: "User not found" });
       }
 
+      console.log('User found:', user);
+
       // Update user details
       const updatedUser = await User.findByIdAndUpdate(
-        user._id,
+        id,
         {
           $set: {
             username,
             name,
             email,
-            profile: profile,
+            profile: profileImage,
           },
         },
         { new: true }
       );
 
+      console.log('Updated user:', updatedUser);
+
       // Update skills if provided
       if (skills && skills.length > 0) {
         // Remove existing skills
-        await Skill.deleteMany({ userId: user._id });
+        await Skill.deleteMany({ userId: id });
 
         // Add new skills
         const skillPromises = skills.map(skill => {
           const newSkill = new Skill({
-            userId: user._id,
+            userId: id,
             skill,
           });
           return newSkill.save();
