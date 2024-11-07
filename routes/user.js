@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const userController = require("../controllers/userController");
+const { uploadResume } = require('../controllers/userController');
 const { verifyAndAuthorization } = require("../middleware/verifyToken");
 
 
@@ -30,5 +31,5 @@ router.get("/agents", verifyAndAuthorization, userController.getAgents);
 router.post("/reviews", verifyAndAuthorization, userController.createReview);
 router.get("/reviews/:jobId", verifyAndAuthorization, userController.getReviewsForJob);
 router.put("/profile/:id", verifyAndAuthorization, userController.updateProfile);
-router.post("/upload-resume", verifyAndAuthorization, userController.uploadResume);
+router.post("/upload-resume", verifyAndAuthorization, uploadResume);
 module.exports = router
