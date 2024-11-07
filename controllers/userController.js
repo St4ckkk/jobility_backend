@@ -330,22 +330,22 @@ module.exports = {
       if (err) {
         return res.status(400).json({ status: false, message: err });
       }
-  
+
       if (!req.file) {
         return res.status(400).json({ status: false, message: "No file uploaded" });
       }
-  
+
       try {
         const userId = req.user.id;
         const resumeBase64 = req.file.buffer.toString('base64'); // Ensure proper base64 encoding
-  
+
         // Save the resume as a base64 string in the user document
         const updatedUser = await User.findByIdAndUpdate(
           userId,
           { $set: { resume: resumeBase64 } },
           { new: true }
         );
-  
+
         res.status(200).json({ status: true, user: updatedUser });
       } catch (err) {
         console.error("Error uploading resume:", err);
@@ -353,5 +353,5 @@ module.exports = {
       }
     });
   }
-  
+
 };
