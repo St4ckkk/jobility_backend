@@ -1,12 +1,11 @@
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
-const User = require("../models/User");
-const Skill = require("../models/Skill");
-const Agent = require("../models/Agent");
-const Review = require("../models/Review");
+const multer = require('multer');
+const path = require('path');
+const User = require('../models/User');
+const Skill = require('../models/Skill');
+const Agent = require('../models/Agent');
+const Review = require('../models/Review');
 
-const storage = multer.memoryStorage(); // Store file in memory
+const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
   fileFilter: function (req, file, cb) {
@@ -20,7 +19,7 @@ const upload = multer({
       cb("Error: File upload only supports the following filetypes - " + filetypes);
     }
   },
-}).single("resume");
+}).single('resume');
 
 module.exports = {
   updateUser: async (req, res) => {
