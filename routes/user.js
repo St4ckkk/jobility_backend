@@ -32,4 +32,6 @@ router.post("/reviews", verifyAndAuthorization, userController.createReview);
 router.get("/reviews/:jobId", verifyAndAuthorization, userController.getReviewsForJob);
 router.put("/profile/:id", verifyAndAuthorization, userController.updateProfile);
 router.post("/upload-resume", verifyAndAuthorization, uploadResume);
+
+
 module.exports = router

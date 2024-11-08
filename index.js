@@ -1,5 +1,5 @@
 const express = require("express");
-const app = express();
+const http = require('http');
 const dotenv = require("dotenv");
 const admin = require('firebase-admin');
 const mongoose = require("mongoose");
@@ -8,16 +8,15 @@ const userRoute = require("./routes/user");
 const appliedRoute = require("./routes/apply");
 const jobRoute = require("./routes/job");
 const bookmarkRoute = require('./routes/bookmark');
+const { wss } = require('./websocket'); // Import WebSocket server
 
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 dotenv.config();
-
 
 // Initialize Firebase Admin with proper private key handling
 const initializeFirebase = () => {
   try {
-    // Method 1: If using individual environment variables
     const privateKey = process.env.FIREBASE_PRIVATE_KEY
       ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
       : undefined;
@@ -35,35 +34,20 @@ const initializeFirebase = () => {
       client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL,
       universe_domain: process.env.FIREBASE_UNIVERSE_DOMAIN
     };
-  
-    // Method 2: If using a single JSON environment variable
-    // Uncomment this if you're using FIREBASE_SERVICE_ACCOUNT
-    /*
-    const serviceAccountConfig = JSON.parse(
-      process.env.FIREBASE_SERVICE_ACCOUNT
-    );
-    */
-
-    // console.log('Initializing Firebase with project:', serviceAccountConfig.project_id);
-    // console.log('Using client email:', serviceAccountConfig.client_email);
 
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccountConfig)
     });
 
-    // console.log("Firebase Admin initialized successfully");
+    console.log("Firebase Admin initialized successfully");
   } catch (error) {
-    console.error("Error initializing Firebase Admin:");
-    console.error("Error message:", error.message);
-    console.error("Error stack:", error.stack);
-    // Rethrow the error to prevent the server from starting with invalid credentials
+    console.error("Error initializing Firebase Admin:", error.message);
     throw error;
   }
 };
 
 // Initialize Firebase
 initializeFirebase();
-
 
 mongoose
   .connect(process.env.MONGO_URL, {
@@ -75,6 +59,9 @@ mongoose
     console.error("Error connecting to MongoDB:", err);
   });
 
+const app = express();
+const server = http.createServer(app);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/", authRoute);
@@ -83,11 +70,15 @@ app.use("/api/jobs", jobRoute);
 app.use("/api/applied", appliedRoute);
 app.use("/api/bookmarks", bookmarkRoute);
 
-
-
-
 app.get("/", (req, res) => res.send("Hello"));
 
 const PORT = process.env.PORT || 5002;
 
-app.listen(PORT, () => console.log(`Example app listening on port ${PORT}!`));
+server.listen(PORT, () => console.log(`Server is listening on port ${PORT}!`));
+
+// Integrate WebSocket server
+server.on('upgrade', (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, (ws) => {
+    wss.emit('connection', ws, request);
+  });
+});

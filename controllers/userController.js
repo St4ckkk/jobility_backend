@@ -349,6 +349,20 @@ module.exports = {
         res.status(500).json({ status: false, message: "Error uploading resume", error: err.message });
       }
     });
-  }
+  },
+  updateFcmToken: async (req, res) => {
+    try {
+      await User.findByIdAndUpdate(
+        req.user.id,
+        {
+          $set: { fcmToken: req.body.fcmToken },
+        },
+        { new: true }
+      );
+      res.status(200).json({ status: true });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
 
 };
