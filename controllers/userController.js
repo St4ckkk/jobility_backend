@@ -325,6 +325,22 @@ module.exports = {
     }
   },
 
+  getResume: async (req, res) => {
+    try {
+      const userId = req.params.id;
+      const user = await User.findById(userId);
+
+      if (!user || !user.resume) {
+        return res.status(404).json({ status: false, message: "Resume not found" });
+      }
+
+      res.status(200).json({ status: true, resume: user.resume });
+    } catch (err) {
+      console.error("Error fetching resume:", err);
+      res.status(500).json({ status: false, message: "Error fetching resume", error: err.message });
+    }
+  },
+
   uploadResume: async (req, res) => {
     upload(req, res, async function (err) {
       if (err) {
