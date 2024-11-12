@@ -32,6 +32,8 @@ module.exports = {
             name: user.name,
             email: user.email,
             password: CryptoJs.AES.encrypt(user.password, process.env.JWT_SEC).toString(),
+            disability: user.disability,
+            pwdIdImage: user.pwdIdImage,
           });
 
           console.log("Saving new user to database");
