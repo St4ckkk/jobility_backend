@@ -273,7 +273,7 @@ module.exports = {
   updateProfile: async (req, res) => {
     try {
       const { id } = req.params;
-      const { username, name, email, profileImage, skills, education, experience } = req.body;
+      const { username, name, email, profile, skills, education, experience, pwdIdImage } = req.body;
 
       console.log('Incoming request:', req.body);
       console.log('User ID:', id);
@@ -295,9 +295,10 @@ module.exports = {
             username,
             name,
             email,
-            profile: profileImage,
+            profile: profile,
             education,
             experience,
+            pwdIdImage: pwdIdImage
           },
         },
         { new: true }
