@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Job = require('../models/Job');
 const Agent = require('../models/Agent');
 const JobAlert = require('../models/JobAlert');
+const Application = require('../models/Application');
 const User = require('../models/User'); // Make sure to import the User model
 const { sendNotification } = require('../websocket');
 const admin = require('firebase-admin');
@@ -208,5 +209,66 @@ module.exports = {
     } catch (error) {
       res.status(500).json(error);
     }
-  }
+  },
+
+  updateApplicationStatus: async (req, res) => {
+    const { userId, jobId } = req.params;
+    const { status } = req.body;
+
+    try {
+      const application = await Application.findOneAndUpdate(
+        { user: userId, job: jobId },
+        { status: status },
+        { new: true }
+      );
+
+      if (!application) {
+        return res.status(404).json({ status: false, message: 'Application not found.' });
+      }
+
+      // Send real-time notification to the user
+      sendNotification(userId.toString(), {
+        type: 'APPLICATION_STATUS_UPDATE',
+        message: `Your application status for job ${application.job} has been updated to ${status}.`,
+        application,
+      });
+      console.log('Real-time notification sent to user:', userId);
+
+      // Send push notification
+      const user = await User.findById(userId);
+      if (user && user.fcmToken) {
+        const message = {
+          notification: {
+            title: 'Application Status Update',
+            body: `Your application status for job ${application.job} has been updated to ${status}.`,
+          },
+          token: user.fcmToken,
+        };
+
+        admin.messaging().send(message)
+          .then(response => {
+            console.log('Successfully sent push notification:', response);
+          })
+          .catch(error => {
+            console.log('Error sending push notification:', error);
+          });
+      }
+
+      // Create a job alert for the user
+      const jobAlert = new JobAlert({
+        userId: userId,
+        jobId: jobId,
+        notified: false
+      });
+
+      await jobAlert.save();
+      console.log('Job alert created for user:', jobAlert);
+
+      res.status(200).json({ status: true, message: 'Application status updated successfully.', application, jobAlert });
+    } catch (error) {
+      console.error('Error updating application status:', error);
+      res.status(500).json(error);
+    }
+  },
+
 };

@@ -20,4 +20,7 @@ router.get('/alerts', jobController.getJobAlerts);
 router.get('/alerts/user/:userId', jobController.getJobAlertsByUser);
 router.put('/alerts/:id/notified', jobController.markAsNotified);
 
+
+router.put('/:jobId/users/:userId', jobController.updateApplicationStatus);
+
 module.exports = router;
