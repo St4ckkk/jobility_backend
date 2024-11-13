@@ -1,5 +1,51 @@
 const mongoose = require("mongoose");
 
+const EducationSchema = new mongoose.Schema({
+  institution: {
+    type: String,
+    required: true,
+  },
+  degree: {
+    type: String,
+    required: true,
+  },
+  fieldOfStudy: {
+    type: String,
+    required: true,
+  },
+  startDate: {
+    type: Date,
+    required: true,
+  },
+  endDate: {
+    type: Date,
+    required: true,
+  },
+});
+
+const ExperienceSchema = new mongoose.Schema({
+  company: {
+    type: String,
+    required: true,
+  },
+  position: {
+    type: String,
+    required: true,
+  },
+  startDate: {
+    type: Date,
+    required: true,
+  },
+  endDate: {
+    type: Date,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: false,
+  },
+});
+
 const UserSchema = new mongoose.Schema(
   {
     username: {
@@ -22,7 +68,7 @@ const UserSchema = new mongoose.Schema(
     },
     uid: {
       type: String,
-      required: true
+      required: true,
     },
     location: {
       type: String,
@@ -46,7 +92,7 @@ const UserSchema = new mongoose.Schema(
     },
     skills: {
       type: Array,
-      default: false,
+      default: [],
     },
     profile: {
       type: String,
@@ -69,6 +115,8 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    education: [EducationSchema], // New field for education
+    experience: [ExperienceSchema], // New field for experience
   },
   { timestamps: true }
 );

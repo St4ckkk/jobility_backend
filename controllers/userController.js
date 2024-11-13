@@ -8,6 +8,7 @@ const Review = require('../models/Review');
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
+
   fileFilter: function (req, file, cb) {
     const filetypes = /pdf/;
     const mimetype = filetypes.test(file.mimetype);
@@ -268,10 +269,11 @@ module.exports = {
     }
   },
 
+
   updateProfile: async (req, res) => {
     try {
       const { id } = req.params;
-      const { username, name, email, profileImage, skills } = req.body;
+      const { username, name, email, profileImage, skills, education, experience } = req.body;
 
       console.log('Incoming request:', req.body);
       console.log('User ID:', id);
@@ -294,6 +296,8 @@ module.exports = {
             name,
             email,
             profile: profileImage,
+            education,
+            experience,
           },
         },
         { new: true }
