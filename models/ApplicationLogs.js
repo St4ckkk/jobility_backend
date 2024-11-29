@@ -12,6 +12,9 @@ const ApplicationLogSchema = new mongoose.Schema({
     },
     status: {
         type: String,
+    },
+    details: {
+        type: String,
     }
 }, { timestamps: true });
 

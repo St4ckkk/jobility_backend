@@ -257,12 +257,12 @@ module.exports = {
 
   updateApplicationStatus: async (req, res) => {
     const { appId } = req.params;
-    const { status } = req.body;
+    const { status, details } = req.body;
 
     try {
       const application = await Application.findByIdAndUpdate(
         appId,
-        { status: status },
+        { status, details },
         { new: true }
       );
 
@@ -276,7 +276,8 @@ module.exports = {
       const newLog = new ApplicationLogs({
         user: userId,
         job: jobId,
-        status: status
+        status,
+        details
       });
       await newLog.save();
       console.log('New application log inserted:', newLog);

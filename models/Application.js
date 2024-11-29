@@ -13,7 +13,10 @@ const ApplicationSchema = new mongoose.Schema({
     status: {
         type: String,
         default: 'pending'
+    },
+    details: {
+        type: String,
     }
-}, { timestamps: true });   
+}, { timestamps: true });
 
 module.exports = mongoose.model('Application', ApplicationSchema);
