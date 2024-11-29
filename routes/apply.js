@@ -5,6 +5,6 @@ const { verifyAndAuthorization } = require("../middleware/verifyToken");
 router.post('/', verifyAndAuthorization, applyController.apply);
 router.get('/', verifyAndAuthorization, applyController.getApplied);
 router.get('/logs', verifyAndAuthorization, applyController.getAppliedLogs);
-router.get('/applicants/:jobId', verifyAndAuthorization, applyController.getApplicants);
+router.get('/applicants/', verifyAndAuthorization, applyController.getApplicants);
 
 module.exports = router;
