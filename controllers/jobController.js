@@ -51,7 +51,7 @@ module.exports = {
       await JobAlert.insertMany(jobAlerts);
       console.log('Job alerts created for users:', jobAlerts);
 
-      // Send real-time notifications to matching users
+      // Send real-time notifications and emails to matching users
       users.forEach(user => {
         sendNotification(user._id.toString(), {
           type: 'JOB_ALERT',
@@ -77,6 +77,34 @@ module.exports = {
             .catch(error => {
               console.log('Error sending push notification:', error);
             });
+        }
+
+        // Send email notification
+        if (user.email) {
+          const mailOptions = {
+            from: 'tpas052202@gmail.com',
+            to: user.email,
+            subject: 'New Job Alert',
+            html: `
+              <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                <h1 style="color: #333;">New Job Alert</h1>
+                <p>Dear ${user.name},</p>
+                <p>A new job that matches your disabilities has been posted: <strong>${newJob.title}</strong> at <strong>${newJob.company}</strong>.</p>
+                <img src="${newJob.imageUrl}" alt="${newJob.title}" style="width: 100%; max-width: 600px; height: auto;"/>
+                <p>Thank you for using our service.</p>
+                <p>Best regards,</p>
+                <p>${newJob.company}</p>
+              </div>
+            `
+          };
+
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.log('Error sending email:', error);
+            } else {
+              console.log('Email sent:', info.response);
+            }
+          });
         }
       });
 
