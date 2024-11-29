@@ -256,12 +256,12 @@ module.exports = {
   },
 
   updateApplicationStatus: async (req, res) => {
-    const { userId, jobId } = req.params;
+    const { appId } = req.params;
     const { status } = req.body;
 
     try {
-      const application = await Application.findOneAndUpdate(
-        { user: userId, job: jobId },
+      const application = await Application.findByIdAndUpdate(
+        appId,
         { status: status },
         { new: true }
       );
@@ -269,6 +269,8 @@ module.exports = {
       if (!application) {
         return res.status(404).json({ status: false, message: 'Application not found.' });
       }
+
+      const { user: userId, job: jobId } = application;
 
       // Insert log into ApplicationLogs
       const newLog = new ApplicationLogs({
@@ -319,15 +321,14 @@ module.exports = {
           to: user.email,
           subject: 'Application Status Update',
           html: `
-            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-              <h1 style="color: #333;">Application Status Update</h1>
-              <p>Dear ${user.name},</p>
-              <p>Your application status for the job <strong>${job.title}</strong> at <strong>${job.company}</strong> has been updated to <strong>${status}</strong>.</p>
-              <p>Thank you for using our service.</p>
-              <p>Best regards,</p>
-              <p>${job.company}</p>
-            </div>
-          `
+                    <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+                        <h1 style="color: #333;">Application Status Update</h1>
+                        <p>Dear ${user.name},</p>
+                        <p>Your application status for the job <strong>${job.title}</strong> at <strong>${job.company}</strong> has been updated to <strong>${status}</strong>.</p>
+                        <p>Best regards,</p>
+                        <p>${job.company}</p>
+                    </div>
+                `
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
