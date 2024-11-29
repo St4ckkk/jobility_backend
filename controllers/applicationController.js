@@ -1,5 +1,6 @@
 const Application = require('../models/Application');
 const ApplicationLogs = require('../models/ApplicationLogs');
+const User = require('../models/User'); // Assuming you have a User model for agents
 
 module.exports = {
     apply: async (req, res) => {
@@ -56,4 +57,22 @@ module.exports = {
         }
     },
 
+    getApplicants: async (req, res) => {
+        const jobId = req.params.jobId;
+        console.log("getApplicants - jobId:", jobId);
+
+        try {
+            const applicants = await Application.find({ job: jobId }, { __v: 0, createdAt: 0, updatedAt: 0 })
+                .populate({
+                    path: 'user',
+                    select: 'name email' // Adjust fields as necessary
+                })
+
+            console.log("getApplicants - applicants:", applicants);
+            res.status(200).json(applicants);
+        } catch (err) {
+            console.error("Error in getApplicants:", err);
+            res.status(500).json({ message: "Internal Server Error", error: err.message });
+        }
+    }
 };

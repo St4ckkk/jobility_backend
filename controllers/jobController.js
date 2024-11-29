@@ -33,7 +33,10 @@ module.exports = {
 
       // Log the query used to find matching users
       const query = {
-        disability: { $in: newJob.acceptedDisabilities.map(d => d.type) }
+        $or: newJob.acceptedDisabilities.map(d => ({
+          disability: d.type,
+          disability: d.specificNames
+        }))
       };
       console.log('Query to find matching users:', query);
 
