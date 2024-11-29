@@ -62,7 +62,7 @@ module.exports = {
             const applicants = await Application.find({}, { __v: 0, createdAt: 0, updatedAt: 0 })
                 .populate({
                     path: 'user',
-                    select: 'name email profile' // Adjust fields as necessary
+                    select: 'name email profile resume disability skills education experience' // Adjust fields as necessary
                 });
 
             console.log("getApplicants - applicants:", applicants);
