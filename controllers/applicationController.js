@@ -1,4 +1,5 @@
 const Application = require('../models/Application');
+const ApplicationLogs = require('../models/ApplicationLogs');
 
 module.exports = {
     apply: async (req, res) => {
@@ -17,6 +18,7 @@ module.exports = {
 
     getApplied: async (req, res) => {
         const userId = req.user.id;
+        console.log("getApplied - userId:", userId);
 
         try {
             const applied = await Application.find({ user: userId }, { __v: 0, createdAt: 0, updatedAt: 0 })
@@ -26,10 +28,32 @@ module.exports = {
                     select: '-createdAt -updatedAt -description -requirements -__v'
                 });
 
+            console.log("getApplied - applied:", applied);
             res.status(200).json(applied);
         } catch (err) {
             console.error("Error in getApplied:", err);
             res.status(500).json({ message: "Internal Server Error", error: err.message });
         }
-    }
+    },
+
+    getAppliedLogs: async (req, res) => {
+        const userId = req.user.id;
+        console.log("getAppliedLogs - userId:", userId);
+
+        try {
+            const appliedLogs = await ApplicationLogs.find({ user: userId }, { __v: 0, createdAt: 0, updatedAt: 0 })
+                .sort({ createdAt: -1 })
+                .populate({
+                    path: 'job',
+                    select: '-createdAt -updatedAt -description -requirements -__v'
+                });
+
+            console.log("getAppliedLogs - appliedLogs:", appliedLogs);
+            res.status(200).json(appliedLogs);
+        } catch (err) {
+            console.error("Error in getAppliedLogs:", err);
+            res.status(500).json({ message: "Internal Server Error", error: err.message });
+        }
+    },
+
 };

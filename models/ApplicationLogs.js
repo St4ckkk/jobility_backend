@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 
-const ApplicationSchema = new mongoose.Schema({
+const ApplicationLogSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -12,8 +12,7 @@ const ApplicationSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        default: 'pending'
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Application', ApplicationSchema);
+module.exports = mongoose.model('ApplicationLog', ApplicationLogSchema);

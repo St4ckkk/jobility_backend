@@ -3,9 +3,23 @@ const Job = require('../models/Job');
 const Agent = require('../models/Agent');
 const JobAlert = require('../models/JobAlert');
 const Application = require('../models/Application');
-const User = require('../models/User'); // Make sure to import the User model
+const ApplicationLogs = require('../models/ApplicationLogs');
+const User = require('../models/User');
+const ApplicationAlert = require('../models/ApplicationAlert');
 const { sendNotification } = require('../websocket');
 const admin = require('firebase-admin');
+const nodemailer = require('nodemailer');
+
+// Configure nodemailer
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: 'tpas052202@gmail.com',
+    pass: 'ailamnlsomhhtglb'
+  }
+});
 
 module.exports = {
   createJob: async (req, res) => {
@@ -226,13 +240,27 @@ module.exports = {
         return res.status(404).json({ status: false, message: 'Application not found.' });
       }
 
+      // Insert log into ApplicationLogs
+      const newLog = new ApplicationLogs({
+        user: userId,
+        job: jobId,
+        status: status
+      });
+      await newLog.save();
+      console.log('New application log inserted:', newLog);
+
+      // Fetch job details
+      const job = await Job.findById(jobId);
+      if (!job) {
+        return res.status(404).json({ status: false, message: 'Job not found.' });
+      }
+
       // Send real-time notification to the user
       sendNotification(userId.toString(), {
         type: 'APPLICATION_STATUS_UPDATE',
-        message: `Your application status for job ${application.job} has been updated to ${status}.`,
+        message: `Your application status for job ${job.title} has been updated to ${status}.`,
         application,
       });
-      console.log('Real-time notification sent to user:', userId);
 
       // Send push notification
       const user = await User.findById(userId);
@@ -240,7 +268,7 @@ module.exports = {
         const message = {
           notification: {
             title: 'Application Status Update',
-            body: `Your application status for job ${application.job} has been updated to ${status}.`,
+            body: `Your application status for job ${job.title} has been updated to ${status}.`,
           },
           token: user.fcmToken,
         };
@@ -254,21 +282,47 @@ module.exports = {
           });
       }
 
-      // Create a job alert for the user
-      const jobAlert = new JobAlert({
+      // Send email notification
+      if (user && user.email) {
+        const mailOptions = {
+          from: 'tpas052202@gmail.com',
+          to: user.email,
+          subject: 'Application Status Update',
+          html: `
+            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+              <h1 style="color: #333;">Application Status Update</h1>
+              <p>Dear ${user.name},</p>
+              <p>Your application status for the job <strong>${job.title}</strong> at <strong>${job.company}</strong> has been updated to <strong>${status}</strong>.</p>
+              <p>Thank you for using our service.</p>
+              <p>Best regards,</p>
+              <p>${job.company}</p>
+            </div>
+          `
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log('Error sending email:', error);
+          } else {
+            console.log('Email sent:', info.response);
+          }
+        });
+      }
+
+      // Create an application alert for the user
+      const applicationAlert = new ApplicationAlert({
         userId: userId,
         jobId: jobId,
         notified: false
       });
 
-      await jobAlert.save();
-      console.log('Job alert created for user:', jobAlert);
+      await applicationAlert.save();
+      console.log('Application alert created for user:', applicationAlert);
 
-      res.status(200).json({ status: true, message: 'Application status updated successfully.', application, jobAlert });
+      res.status(200).json({ status: true, message: 'Application status updated successfully.', application, applicationAlert });
     } catch (error) {
       console.error('Error updating application status:', error);
       res.status(500).json(error);
     }
-  },
-
+  }
 };
