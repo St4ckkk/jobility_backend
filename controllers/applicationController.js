@@ -65,7 +65,7 @@ module.exports = {
             const applicants = await Application.find({ job: jobId }, { __v: 0, createdAt: 0, updatedAt: 0 })
                 .populate({
                     path: 'user',
-                    select: 'name email' // Adjust fields as necessary
+                    select: 'name email profile' // Adjust fields as necessary
                 })
 
             console.log("getApplicants - applicants:", applicants);
