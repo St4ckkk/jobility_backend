@@ -56,7 +56,7 @@ const JobSchema = new mongoose.Schema(
       type: [
         {
           type: { type: String, required: true },
-          specificNames: { type: [String], required: true },
+          specificNames: { type: String, required: true },
         },
       ],
       required: true,
