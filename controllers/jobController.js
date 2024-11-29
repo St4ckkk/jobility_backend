@@ -90,7 +90,6 @@ module.exports = {
                 <h1 style="color: #333;">New Job Alert</h1>
                 <p>Dear ${user.name},</p>
                 <p>A new job that matches your disabilities has been posted: <strong>${newJob.title}</strong> at <strong>${newJob.company}</strong>.</p>
-                <img src="${newJob.imageUrl}" alt="${newJob.title}" style="width: 100%; max-width: 600px; height: auto;"/>
                 <p>Thank you for using our service.</p>
                 <p>Best regards,</p>
                 <p>${newJob.company}</p>
