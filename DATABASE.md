@@ -92,4 +92,3 @@ This document provides an overview of the database schema used in the Jobility b
 
 ---
 
-This document is intended to assist developers and database administrators in understanding the structure and relationships within the Jobility backend database.
